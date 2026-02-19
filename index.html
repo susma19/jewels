@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Choice Jewelry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav-wrap">
+      <div class="brand">Your Choice</div>
+      <nav class="nav-links">
+        <a href="#">Shop</a>
+        <a href="#">Collections</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" type="button" aria-label="Search">⌕</button>
+        <button class="icon-btn cart-btn" id="cartToggle" type="button" aria-label="Open cart">
+          🛍 <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="btn btn-login" id="loginOpen" type="button">Login</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section-tan">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1>Timeless Elegance in Every Piece</h1>
+          <p>Discover our curated collection of handcrafted jewelry, where artistry meets sophistication. Each piece tells a unique story of beauty and grace.</p>
+          <div class="hero-actions">
+            <a class="btn btn-solid" href="#">Shop Collection</a>
+            <a class="btn btn-outline" href="#">Learn More</a>
+          </div>
+        </div>
+        <div class="hero-image card-shadow">
+          <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=900&q=80" alt="Golden pendant on warm background" />
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-light">
+      <div class="container">
+        <div class="section-head">
+          <h2>Shop by Category</h2>
+          <p>Explore our exquisite collection crafted with precision and passion.</p>
+        </div>
+        <div class="category-grid">
+          <article class="category-card"><img src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=700&q=80" alt="Necklace category" /><h3>Necklaces</h3></article>
+          <article class="category-card"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=700&q=80" alt="Rings category" /><h3>Rings</h3></article>
+          <article class="category-card"><img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=700&q=80" alt="Earrings category" /><h3>Earrings</h3></article>
+          <article class="category-card"><img src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?auto=format&fit=crop&w=700&q=80" alt="Bracelets category" /><h3>Bracelets</h3></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-light">
+      <div class="container">
+        <div class="section-head">
+          <h2>Featured Collection</h2>
+          <p>Handpicked pieces that embody elegance and craftsmanship.</p>
+        </div>
+        <div class="products-grid">
+          <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=700&q=80" alt="Diamond pendant ring" />
+            <div class="product-info"><h3>Diamond Pendant</h3><p>18K white gold</p><div class="product-row"><strong>$899</strong><button class="add-cart-btn" data-id="diamond-pendant" data-name="Diamond Pendant" data-price="899" type="button">Add to Cart</button></div></div>
+          </article>
+          <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=700&q=80" alt="Sapphire ring" />
+            <div class="product-info"><h3>Sapphire Ring</h3><p>14K yellow gold</p><div class="product-row"><strong>$1,299</strong><button class="add-cart-btn" data-id="sapphire-ring" data-name="Sapphire Ring" data-price="1299" type="button">Add to Cart</button></div></div>
+          </article>
+          <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=700&q=80" alt="Pearl earrings" />
+            <div class="product-info"><h3>Pearl Earrings</h3><p>Sterling silver</p><div class="product-row"><strong>$449</strong><button class="add-cart-btn" data-id="pearl-earrings" data-name="Pearl Earrings" data-price="449" type="button">Add to Cart</button></div></div>
+          </article>
+          <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=700&q=80" alt="Chain bracelet" />
+            <div class="product-info"><h3>Chain Bracelet</h3><p>White gold</p><div class="product-row"><strong>$679</strong><button class="add-cart-btn" data-id="chain-bracelet" data-name="Chain Bracelet" data-price="679" type="button">Add to Cart</button></div></div>
+          </article>
+          <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=700&q=80" alt="Statement necklace" />
+            <div class="product-info"><h3>Statement Necklace</h3><p>Mixed stones</p><div class="product-row"><strong>$1,499</strong><button class="add-cart-btn" data-id="statement-necklace" data-name="Statement Necklace" data-price="1499" type="button">Add to Cart</button></div></div>
+          </article>
+          <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1619119069152-a2b331eb392a?auto=format&fit=crop&w=700&q=80" alt="Emerald ring" />
+            <div class="product-info"><h3>Emerald Ring</h3><p>Platinum</p><div class="product-row"><strong>$2,199</strong><button class="add-cart-btn" data-id="emerald-ring" data-name="Emerald Ring" data-price="2199" type="button">Add to Cart</button></div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-brown testimonials">
+      <div class="container">
+        <div class="section-head light">
+          <h2>What Our Clients Say</h2>
+          <p>Hear from those who have experienced our handcrafted excellence.</p>
+        </div>
+        <div class="testimonial-grid">
+          <article class="quote-card">
+            <p>The quality and craftsmanship are exceptional. My diamond necklace is absolutely stunning and I receive compliments every time I wear it.</p>
+            <h4>Sarah Johnson</h4>
+            <span>New York, NY</span>
+          </article>
+          <article class="quote-card">
+            <p>Your Choice has become my go-to for special occasion jewelry. The attention to detail and customer service are unmatched.</p>
+            <h4>Emily Chen</h4>
+            <span>Los Angeles, CA</span>
+          </article>
+          <article class="quote-card">
+            <p>I purchased an engagement ring here and it exceeded all expectations. The piece is timeless and beautifully crafted.</p>
+            <h4>Michael Roberts</h4>
+            <span>Chicago, IL</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tan newsletter">
+      <div class="container centered">
+        <h2>Join Our Newsletter</h2>
+        <p>Subscribe to receive exclusive offers, new collection launches, and style inspiration.</p>
+        <form class="newsletter-form" action="#">
+          <input type="email" placeholder="Enter your email" aria-label="Enter your email" />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button class="icon-btn" id="cartClose" type="button" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <p>Total: <strong id="cartTotal">$0</strong></p>
+    </div>
+  </aside>
+  <div class="overlay" id="cartOverlay"></div>
+
+  <div class="modal-overlay" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="login-modal">
+      <button class="icon-btn modal-close" id="loginClose" type="button" aria-label="Close login modal">✕</button>
+      <h3 id="loginTitle">Welcome Back</h3>
+      <p>Login to continue shopping your favorite jewelry pieces.</p>
+      <form class="login-form" action="#">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" placeholder="you@example.com" required />
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" placeholder="••••••••" required />
+        <button class="btn btn-solid" type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>Your Choice</h3>
+        <p>Crafting timeless jewelry pieces that celebrate life's precious moments.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul><li><a href="#">Necklaces</a></li><li><a href="#">Earrings</a></li><li><a href="#">Bracelets</a></li></ul>
+      </div>
+      <div>
+        <h4>Customer Care</h4>
+        <ul><li><a href="#">Contact Us</a></li><li><a href="#">Shipping & Returns</a></li><li><a href="#">Care Instructions</a></li></ul>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <ul><li><a href="#">Instagram</a></li><li><a href="#">hello@yourchoicejewelry.com</a></li><li><a href="#">123-4567</a></li></ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <small>©2025 Your Choice Jewelry. All rights reserved.</small>
+      <div><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
