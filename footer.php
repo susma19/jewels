@@ -8,11 +8,7 @@
       <h4 class="cart-payment-title">Payment method</h4>
       <div class="cart-payment-options">
         <label class="cart-payment-option">
-          <input type="radio" name="cartPayment" value="card" checked />
-          <span class="payment-option-label">Credit / Debit card</span>
-        </label>
-        <label class="cart-payment-option">
-          <input type="radio" name="cartPayment" value="esewa" />
+          <input type="radio" name="cartPayment" value="esewa" checked />
           <span class="payment-option-label">eSewa</span>
         </label>
         <label class="cart-payment-option">
@@ -23,7 +19,7 @@
       <button class="btn btn-solid cart-checkout-btn" id="cartCheckoutBtn" type="button">Proceed to Checkout</button>
     </div>
     <div class="cart-footer">
-      <p>Total: <strong id="cartTotal">$0</strong></p>
+      <p>Total: <strong id="cartTotal">Rs 0</strong></p>
     </div>
   </aside>
   <div class="overlay" id="cartOverlay"></div>
@@ -64,14 +60,54 @@
   </div>
 
   <div class="modal-overlay" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
-    <div class="login-modal payment-modal">
-      <button class="icon-btn modal-close light-border" id="paymentModalClose" type="button" aria-label="Close payment">✕</button>
-      <h3 id="paymentModalTitle">Complete Payment</h3>
-      <p class="payment-modal-total" id="paymentModalTotal">Total: $0</p>
-      <p class="payment-modal-method" id="paymentModalMethod"></p>
-      <div class="payment-modal-fields" id="paymentModalFields"></div>
-      <p id="paymentModalMessage" class="form-message"></p>
-      <button class="btn btn-solid" id="paymentModalConfirm" type="button">Pay Now</button>
+    <div class="esewa-modal">
+      <div class="esewa-header">
+        <div class="esewa-logo">eSewa</div>
+        <button class="esewa-close" id="paymentModalClose" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="esewa-content">
+        <div class="esewa-merchant-info">
+          <div class="merchant-name">Your Choice Jewelry</div>
+          <div class="merchant-id">Merchant ID: YCJ-2025</div>
+        </div>
+        
+        <div class="order-summary-section">
+          <h4 class="section-title">Order Summary</h4>
+          <div id="orderItemsList" class="order-items-list"></div>
+          <div class="order-total-row">
+            <span>Total Amount:</span>
+            <strong id="paymentModalTotal">Rs 0</strong>
+          </div>
+        </div>
+        
+        <div class="esewa-payment-section">
+          <h4 class="section-title">eSewa Payment</h4>
+          <div class="esewa-form">
+            <label for="esewaMobile">eSewa ID / Mobile Number *</label>
+            <input id="esewaMobile" type="text" placeholder="98XXXXXXXX" maxlength="10" required />
+            <label for="esewaPin">eSewa PIN *</label>
+            <input id="esewaPin" type="password" placeholder="Enter your PIN" maxlength="6" required />
+          </div>
+        </div>
+        
+        <div class="billing-details-section">
+          <h4 class="section-title">Billing & Shipping Details</h4>
+          <div class="billing-form">
+            <label for="billingOrderedBy">Ordered By *</label>
+            <input id="billingOrderedBy" type="text" placeholder="Full name" required />
+            <label for="billingSentBy">Sent By *</label>
+            <input id="billingSentBy" type="text" placeholder="Your name or company" required />
+            <label for="billingAddress">Shipping Address *</label>
+            <textarea id="billingAddress" placeholder="Full address with city and postal code" rows="3" required></textarea>
+          </div>
+        </div>
+        
+        <p id="paymentModalMessage" class="esewa-message"></p>
+        <button class="esewa-pay-btn" id="paymentModalConfirm" type="button">Pay with eSewa</button>
+        <div class="esewa-footer">
+          <small>By proceeding, you agree to eSewa's Terms & Conditions</small>
+        </div>
+      </div>
     </div>
   </div>
 

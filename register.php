@@ -33,7 +33,19 @@ $stmt = $conn->prepare('INSERT INTO users (name, email, password_hash) VALUES (?
 $stmt->bind_param('sss', $name, $email, $hashed);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Registration successful']);
+    $user_id = $conn->insert_id;
+    
+    // Auto-login user after registration
+    session_start();
+    $_SESSION['user_id'] = $user_id;
+    $_SESSION['user_name'] = $name;
+    $_SESSION['user_role'] = 'user'; // Default role
+    
+    echo json_encode([
+        'success' => true, 
+        'message' => 'Registration successful! You are now logged in.',
+        'user' => ['name' => $name, 'role' => 'user']
+    ]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Could not register user']);
 }

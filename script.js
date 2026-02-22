@@ -48,7 +48,7 @@ const getTotalPrice = (cart) => cart.reduce((sum, item) => sum + item.price * it
 function renderCart() {
   const cart = getCart();
   if (cartCount) cartCount.textContent = getTotalCount(cart);
-  if (cartTotal) cartTotal.textContent = `$${getTotalPrice(cart).toLocaleString()}`;
+  if (cartTotal) cartTotal.textContent = `Rs ${getTotalPrice(cart).toLocaleString()}`;
 
   if (cartDrawer) cartDrawer.classList.toggle("has-items", cart.length > 0);
 
@@ -61,7 +61,7 @@ function renderCart() {
 
   cartItems.innerHTML = cart
     .map(
-      (item) => `<article class="cart-item"><div><strong>${item.name}</strong><small>Qty: ${item.qty}</small><small>$${item.price.toLocaleString()} each</small></div><button class="remove-item" type="button" data-id="${item.id}">Remove</button></article>`
+      (item) => `<article class="cart-item"><div><strong>${item.name}</strong><small>Qty: ${item.qty}</small><small>Rs ${item.price.toLocaleString()} each</small></div><button class="remove-item" type="button" data-id="${item.id}">Remove</button></article>`
     )
     .join("");
 
@@ -115,7 +115,17 @@ async function handleAuthSubmit(event, targetUrl, messageEl) {
         closeModal(loginModal);
         closeModal(signupModal);
       }, 400);
-      if (targetUrl === 'login.php') location.reload();
+      if (targetUrl === 'login.php') {
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          location.reload();
+        }
+      }
+      if (targetUrl === 'register.php') {
+        // Auto-login after registration - reload page to show logged-in state
+        location.reload();
+      }
     }
   } catch (_) {
     messageEl.textContent = "Server error. Please try again.";
@@ -148,7 +158,7 @@ async function runSearch() {
     searchMeta.textContent = `${data.products.length} result(s) for "${query}".`;
     searchResults.innerHTML = data.products
       .map(
-        (p) => `<article class="product-card"><img src="${p.image_url}" alt="${p.name}" /><div class="product-info"><h3>${p.name}</h3><p>${p.material || "Fine jewelry"}</p><div class="product-row"><strong>$${Number(p.price).toLocaleString()}</strong><button class="add-cart-btn" data-id="db-${p.id}" data-name="${p.name}" data-price="${Number(p.price)}" type="button">Add to Cart</button></div></div></article>`
+        (p) => `<article class="product-card"><img src="${p.image_url}" alt="${p.name}" /><div class="product-info"><h3>${p.name}</h3><p>${p.material || "Fine jewelry"}</p><div class="product-row"><strong>Rs ${Number(p.price).toLocaleString()}</strong><button class="add-cart-btn" data-id="db-${p.id}" data-name="${p.name}" data-price="${Number(p.price)}" type="button">Add to Cart</button></div></div></article>`
       )
       .join("");
 
@@ -180,7 +190,7 @@ const paymentModal = document.getElementById("paymentModal");
 const paymentModalClose = document.getElementById("paymentModalClose");
 const paymentModalTotal = document.getElementById("paymentModalTotal");
 const paymentModalMethod = document.getElementById("paymentModalMethod");
-const paymentModalFields = document.getElementById("paymentModalFields");
+const orderItemsList = document.getElementById("orderItemsList");
 const paymentModalMessage = document.getElementById("paymentModalMessage");
 const paymentModalConfirm = document.getElementById("paymentModalConfirm");
 
@@ -192,27 +202,24 @@ function closePaymentModal() {
   if (paymentModalMessage) paymentModalMessage.textContent = "";
 }
 
-function buildPaymentFields(method) {
-  if (!paymentModalFields) return;
-  if (method === "card") {
-    paymentModalFields.innerHTML = `
-      <label for="payCardNumber">Card number</label>
-      <input id="payCardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
-      <label for="payCardExp">Expiry</label>
-      <input id="payCardExp" type="text" placeholder="MM/YY" maxlength="5" />
-      <label for="payCardCvv">CVV</label>
-      <input id="payCardCvv" type="text" placeholder="123" maxlength="4" />
-    `;
-  } else if (method === "esewa") {
-    paymentModalFields.innerHTML = `
-      <label for="payEsewaId">eSewa ID / Mobile number</label>
-      <input id="payEsewaId" type="text" placeholder="98XXXXXXXX" />
-      <label for="payEsewaPin">eSewa PIN</label>
-      <input id="payEsewaPin" type="password" placeholder="••••••" />
-    `;
-  } else {
-    paymentModalFields.innerHTML = `<p class="payment-cod-note">Pay when your order is delivered. No details needed.</p>`;
+function buildOrderItemsList(cart) {
+  const orderItemsList = document.getElementById("orderItemsList");
+  if (!orderItemsList) return;
+  
+  if (!cart || cart.length === 0) {
+    orderItemsList.innerHTML = "<p>No items in cart</p>";
+    return;
   }
+  
+  orderItemsList.innerHTML = cart.map(item => `
+    <div class="order-item-row">
+      <div>
+        <div class="order-item-name">${item.name}</div>
+        <div class="order-item-qty">Qty: ${item.qty}</div>
+      </div>
+      <div class="order-item-price">Rs ${(item.price * item.qty).toLocaleString()}</div>
+    </div>
+  `).join("");
 }
 
 document.addEventListener("click", (e) => {
@@ -221,34 +228,146 @@ document.addEventListener("click", (e) => {
   e.preventDefault();
   const cart = getCart();
   if (!cart.length) return;
-  const method = document.querySelector('input[name="cartPayment"]:checked')?.value || "card";
+  const method = document.querySelector('input[name="cartPayment"]:checked')?.value || "esewa";
   const total = getTotalPrice(cart);
-  const methodLabel = method === "card" ? "Credit / Debit card" : method === "esewa" ? "eSewa" : "Cash on delivery";
-  if (paymentModalTotal) paymentModalTotal.textContent = "Total: $" + total.toLocaleString();
-  if (paymentModalMethod) paymentModalMethod.textContent = "Paying with " + methodLabel;
+  
+  if (paymentModalTotal) paymentModalTotal.textContent = "Rs " + total.toLocaleString();
+  buildOrderItemsList(cart);
+  
+  // Show/hide eSewa section based on payment method
+  const esewaSection = document.querySelector(".esewa-payment-section");
+  if (esewaSection) {
+    esewaSection.style.display = method === "cod" ? "none" : "block";
+  }
+  
   const confirmBtn = paymentModalConfirm;
-  if (confirmBtn) confirmBtn.textContent = method === "cod" ? "Confirm Order" : "Pay Now";
-  buildPaymentFields(method);
+  if (confirmBtn) {
+    confirmBtn.textContent = method === "cod" ? "Confirm Order" : "Pay with eSewa";
+    confirmBtn.disabled = false;
+  }
+  
+  // Clear previous inputs
+  const esewaMobileEl = document.getElementById("esewaMobile");
+  const esewaPinEl = document.getElementById("esewaPin");
+  const orderedByEl = document.getElementById("billingOrderedBy");
+  const sentByEl = document.getElementById("billingSentBy");
+  const addressEl = document.getElementById("billingAddress");
+  if (esewaMobileEl) esewaMobileEl.value = "";
+  if (esewaPinEl) esewaPinEl.value = "";
+  if (orderedByEl) orderedByEl.value = "";
+  if (sentByEl) sentByEl.value = "";
+  if (addressEl) addressEl.value = "";
+  if (paymentModalMessage) paymentModalMessage.textContent = "";
+  
   openPaymentModal();
 });
 
 paymentModalClose?.addEventListener("click", closePaymentModal);
 paymentModal?.addEventListener("click", (e) => { if (e.target === paymentModal) closePaymentModal(); });
 
-paymentModalConfirm?.addEventListener("click", () => {
+// Update modal when payment method changes in cart
+document.querySelectorAll('input[name="cartPayment"]')?.forEach(radio => {
+  radio.addEventListener("change", () => {
+    if (paymentModal?.classList.contains("show")) {
+      const method = radio.value;
+      const esewaSection = document.querySelector(".esewa-payment-section");
+      const confirmBtn = paymentModalConfirm;
+      if (esewaSection) esewaSection.style.display = method === "cod" ? "none" : "block";
+      if (confirmBtn) confirmBtn.textContent = method === "cod" ? "Confirm Order" : "Pay with eSewa";
+    }
+  });
+});
+
+paymentModalConfirm?.addEventListener("click", async () => {
   if (!paymentModalMessage) return;
-  paymentModalMessage.style.color = "#2d7a3e";
-  paymentModalMessage.textContent = "Payment successful! Thank you for your order.";
-  paymentModalConfirm.textContent = "Done";
+  
+  const esewaMobile = document.getElementById("esewaMobile")?.value.trim();
+  const esewaPin = document.getElementById("esewaPin")?.value.trim();
+  const orderedBy = document.getElementById("billingOrderedBy")?.value.trim();
+  const sentBy = document.getElementById("billingSentBy")?.value.trim();
+  const shippingAddress = document.getElementById("billingAddress")?.value.trim();
+  
+  const method = document.querySelector('input[name="cartPayment"]:checked')?.value || "esewa";
+  
+  if (method === "esewa") {
+    if (!esewaMobile || !esewaPin) {
+      paymentModalMessage.style.color = "#b33";
+      paymentModalMessage.textContent = "Please enter eSewa ID and PIN.";
+      return;
+    }
+    if (!/^98\d{8}$/.test(esewaMobile)) {
+      paymentModalMessage.style.color = "#b33";
+      paymentModalMessage.textContent = "Please enter a valid 10-digit mobile number starting with 98.";
+      return;
+    }
+    if (esewaPin.length < 4) {
+      paymentModalMessage.style.color = "#b33";
+      paymentModalMessage.textContent = "PIN must be at least 4 characters.";
+      return;
+    }
+  }
+  
+  if (!orderedBy || !sentBy || !shippingAddress) {
+    paymentModalMessage.style.color = "#b33";
+    paymentModalMessage.textContent = "Please fill all billing details.";
+    return;
+  }
+  
+  const cart = getCart();
+  if (!cart.length) {
+    paymentModalMessage.style.color = "#b33";
+    paymentModalMessage.textContent = "Cart is empty.";
+    return;
+  }
+  
+  const total = getTotalPrice(cart);
+  
   paymentModalConfirm.disabled = true;
-  setTimeout(() => {
-    closePaymentModal();
-    closeCart();
-    saveCart([]);
-    renderCart();
-    paymentModalConfirm.textContent = "Pay Now";
+  paymentModalConfirm.textContent = "Processing...";
+  paymentModalMessage.textContent = "";
+  
+  try {
+    const formData = new FormData();
+    formData.append("cart_items", JSON.stringify(cart));
+    formData.append("payment_method", method);
+    formData.append("total_amount", total);
+    formData.append("shipping_address", shippingAddress);
+    formData.append("ordered_by", orderedBy);
+    formData.append("sent_by", sentBy);
+    
+    const res = await fetch("process_order.php", { method: "POST", body: formData });
+    const data = await res.json();
+    
+    if (data.success) {
+      paymentModalMessage.style.color = "#00a651";
+      paymentModalMessage.textContent = `✓ Payment successful! Order #${data.order_number} placed. Thank you!`;
+      paymentModalConfirm.textContent = "Done";
+      
+      setTimeout(() => {
+        closePaymentModal();
+        closeCart();
+        saveCart([]);
+        renderCart();
+        document.getElementById("esewaMobile").value = "";
+        document.getElementById("esewaPin").value = "";
+        document.getElementById("billingOrderedBy").value = "";
+        document.getElementById("billingSentBy").value = "";
+        document.getElementById("billingAddress").value = "";
+        paymentModalConfirm.textContent = method === "cod" ? "Confirm Order" : "Pay with eSewa";
+        paymentModalConfirm.disabled = false;
+      }, 2500);
+    } else {
+      paymentModalMessage.style.color = "#b33";
+      paymentModalMessage.textContent = data.message || "Payment failed. Please try again.";
+      paymentModalConfirm.textContent = method === "cod" ? "Confirm Order" : "Pay with eSewa";
+      paymentModalConfirm.disabled = false;
+    }
+  } catch (error) {
+    paymentModalMessage.style.color = "#b33";
+    paymentModalMessage.textContent = "Server error. Please try again.";
+    paymentModalConfirm.textContent = method === "cod" ? "Confirm Order" : "Pay with eSewa";
     paymentModalConfirm.disabled = false;
-  }, 1800);
+  }
 });
 
 loginOpen?.addEventListener("click", () => openModal(loginModal));

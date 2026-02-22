@@ -2,6 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 $current = basename($_SERVER['PHP_SELF']);
 $loggedIn = isset($_SESSION['user_id']) && isset($_SESSION['user_name']);
+$isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 function isActive(string $file, string $current): string {
     return $file === $current ? 'active' : '';
 }
@@ -28,6 +29,7 @@ function isActive(string $file, string $current): string {
       <a class="<?= isActive('about.php', $current) ?>" href="about.php">About</a>
       <a class="<?= isActive('contact.php', $current) ?>" href="contact.php">Contact</a>
       <?php if ($loggedIn): ?><a class="<?= isActive('profile.php', $current) ?>" href="profile.php">Profile</a><?php endif; ?>
+      <?php if ($isAdmin): ?><a class="<?= isActive('admin_dashboard.php', $current) ?>" href="admin_dashboard.php">Admin</a><?php endif; ?>
     </nav>
 
     <div class="nav-actions">
@@ -42,6 +44,9 @@ function isActive(string $file, string $current): string {
           </button>
           <div class="user-dropdown-menu" id="userDropdownMenu" aria-hidden="true">
             <a href="profile.php">Update Profile</a>
+            <?php if ($isAdmin): ?>
+            <a href="admin_dashboard.php">🔐 Admin Panel</a>
+            <?php endif; ?>
             <a href="logout.php">Logout</a>
           </div>
         </div>
