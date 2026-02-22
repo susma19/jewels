@@ -19,8 +19,8 @@ include __DIR__ . '/header.php';
             <h3><?= htmlspecialchars($p['name']) ?></h3>
             <p><?= htmlspecialchars($p['material'] ?? 'Fine jewelry') ?></p>
             <div class="product-row">
-              <strong>Rs <?= number_format((float) $p['price'], 2) ?></strong>
-              <button class="add-cart-btn" data-id="db-<?= (int) $p['id'] ?>" data-name="<?= htmlspecialchars($p['name']) ?>" data-price="<?= (float) $p['price'] ?>" type="button">Add to Cart</button>
+              <strong>Rs <?= number_format((int) $p['price'], 2) ?></strong>
+              <button class="add-cart-btn" data-id="db-<?= (int) $p['id'] ?>" data-name="<?= htmlspecialchars($p['name']) ?>" data-price="<?= (int) $p['price'] ?>" type="button">Add to Cart</button>
             </div>
           </div>
         </article>

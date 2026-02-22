@@ -1,4 +1,9 @@
-const CART_KEY = "yourChoiceCart";
+const CART_PREFIX = "yourChoiceCart";
+
+function getCartKey() {
+  const uid = window.CURRENT_USER_ID;
+  return CART_PREFIX + "_" + (uid != null && uid !== "" ? uid : "guest");
+}
 
 const cartToggle = document.getElementById("cartToggle");
 const cartClose = document.getElementById("cartClose");
@@ -31,7 +36,7 @@ const searchResultsSection = document.getElementById("searchResultsSection");
 
 function getCart() {
   try {
-    const saved = localStorage.getItem(CART_KEY);
+    const saved = localStorage.getItem(getCartKey());
     return saved ? JSON.parse(saved) : [];
   } catch (_) {
     return [];
@@ -39,8 +44,51 @@ function getCart() {
 }
 
 function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  localStorage.setItem(getCartKey(), JSON.stringify(cart));
 }
+
+// Migrate old single-key cart into current user/guest cart so no one loses items
+(function migrateOldCart() {
+  try {
+    const oldKey = "yourChoiceCart";
+    const oldSaved = localStorage.getItem(oldKey);
+    if (!oldSaved) return;
+    const oldCart = JSON.parse(oldSaved);
+    if (!Array.isArray(oldCart) || oldCart.length === 0) {
+      localStorage.removeItem(oldKey);
+      return;
+    }
+    const current = getCart();
+    const merged = [...current];
+    oldCart.forEach(function (g) {
+      const existing = merged.find(function (item) { return item.id === g.id; });
+      if (existing) existing.qty += g.qty || 1;
+      else merged.push({ ...g, qty: g.qty || 1 });
+    });
+    saveCart(merged);
+    localStorage.removeItem(oldKey);
+  } catch (_) {}
+})();
+
+// When logged in, merge guest cart into user cart once so items added before login are kept
+(function mergeGuestCartOnce() {
+  if (window.CURRENT_USER_ID == null || window.CURRENT_USER_ID === "") return;
+  try {
+    const guestKey = CART_PREFIX + "_guest";
+    const guestSaved = localStorage.getItem(guestKey);
+    const guestCart = guestSaved ? JSON.parse(guestSaved) : [];
+    if (guestCart.length === 0) return;
+    const userCart = getCart();
+    const merged = [...userCart];
+    guestCart.forEach(function (g) {
+      const existing = merged.find(function (item) { return item.id === g.id; });
+      if (existing) existing.qty += g.qty || 1;
+      else merged.push({ ...g, qty: g.qty || 1 });
+    });
+    saveCart(merged);
+    localStorage.removeItem(guestKey);
+  } catch (_) {}
+})();
 
 const getTotalCount = (cart) => cart.reduce((sum, item) => sum + item.qty, 0);
 const getTotalPrice = (cart) => cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -336,7 +384,13 @@ paymentModalConfirm?.addEventListener("click", async () => {
     formData.append("sent_by", sentBy);
     
     const res = await fetch("process_order.php", { method: "POST", body: formData });
-    const data = await res.json();
+    const text = await res.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch (_) {
+      // Server returned non-JSON (e.g. PHP error page)
+    }
     
     if (data.success) {
       paymentModalMessage.style.color = "#00a651";
@@ -348,8 +402,10 @@ paymentModalConfirm?.addEventListener("click", async () => {
         closeCart();
         saveCart([]);
         renderCart();
-        document.getElementById("esewaMobile").value = "";
-        document.getElementById("esewaPin").value = "";
+        const esewaMobileEl = document.getElementById("esewaMobile");
+        const esewaPinEl = document.getElementById("esewaPin");
+        if (esewaMobileEl) esewaMobileEl.value = "";
+        if (esewaPinEl) esewaPinEl.value = "";
         document.getElementById("billingOrderedBy").value = "";
         document.getElementById("billingSentBy").value = "";
         document.getElementById("billingAddress").value = "";
@@ -358,13 +414,18 @@ paymentModalConfirm?.addEventListener("click", async () => {
       }, 2500);
     } else {
       paymentModalMessage.style.color = "#b33";
-      paymentModalMessage.textContent = data.message || "Payment failed. Please try again.";
+      const serverMsg = (data && data.message && String(data.message).trim()) || "";
+      let showMsg = serverMsg;
+      if (!showMsg && text && !text.trim().startsWith("{")) {
+        showMsg = "Server error (invalid response). Make sure the orders table exists — run create_orders_tables.sql in phpMyAdmin.";
+      }
+      paymentModalMessage.textContent = showMsg || (res.ok ? "Order could not be placed. Please try again." : "Server error. Please try again.");
       paymentModalConfirm.textContent = method === "cod" ? "Confirm Order" : "Pay with eSewa";
       paymentModalConfirm.disabled = false;
     }
-  } catch (error) {
+  } catch (err) {
     paymentModalMessage.style.color = "#b33";
-    paymentModalMessage.textContent = "Server error. Please try again.";
+    paymentModalMessage.textContent = "Network or server error. Please check your connection and try again.";
     paymentModalConfirm.textContent = method === "cod" ? "Confirm Order" : "Pay with eSewa";
     paymentModalConfirm.disabled = false;
   }

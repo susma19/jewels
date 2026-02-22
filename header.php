@@ -17,6 +17,7 @@ function isActive(string $file, string $current): string {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script>window.CURRENT_USER_ID = <?= $loggedIn ? (int)$_SESSION['user_id'] : 'null' ?>;</script>
 </head>
 <body>
 <header class="topbar">
@@ -28,7 +29,7 @@ function isActive(string $file, string $current): string {
       <a class="<?= isActive('collection.php', $current) ?>" href="collection.php">Collection</a>
       <a class="<?= isActive('about.php', $current) ?>" href="about.php">About</a>
       <a class="<?= isActive('contact.php', $current) ?>" href="contact.php">Contact</a>
-      <?php if ($loggedIn): ?><a class="<?= isActive('profile.php', $current) ?>" href="profile.php">Profile</a><?php endif; ?>
+      <?php if ($loggedIn): ?><a class="<?= isActive('profile.php', $current) ?>" href="profile.php">Profile</a><a class="<?= isActive('my_orders.php', $current) ?>" href="my_orders.php">My Orders</a><?php endif; ?>
       <?php if ($isAdmin): ?><a class="<?= isActive('admin_dashboard.php', $current) ?>" href="admin_dashboard.php">Admin</a><?php endif; ?>
     </nav>
 
@@ -44,6 +45,7 @@ function isActive(string $file, string $current): string {
           </button>
           <div class="user-dropdown-menu" id="userDropdownMenu" aria-hidden="true">
             <a href="profile.php">Update Profile</a>
+            <a href="my_orders.php">My Orders</a>
             <?php if ($isAdmin): ?>
             <a href="admin_dashboard.php">🔐 Admin Panel</a>
             <?php endif; ?>

@@ -13,12 +13,11 @@ include __DIR__ . '/header.php';
         <p>Discover our curated collection of handcrafted jewelry, where artistry meets sophistication.</p>
         <div class="hero-actions">
           <a class="btn btn-solid" href="shop.php">Shop Collection</a>
-          <a class="btn btn-outline" href="collection.php">Learn More</a>
+          <a class="btn btn-outline" href="about.php">Learn More</a>
         </div>
       </div>
       <div class="hero-image card-shadow">
-        <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=900&q=80" alt="Golden pendant on warm background" />
-      </div>
+<img src="https://i.pinimg.com/736x/d4/e6/e0/d4e6e0ccc2ea522658f77b606289f88d.jpg" alt="Pearl Jewels" />      </div>
     </div>
   </section>
 
@@ -39,8 +38,8 @@ include __DIR__ . '/header.php';
                   <h3><?= htmlspecialchars($p['name']) ?></h3>
                   <p><?= htmlspecialchars($p['material'] ?? 'Fine jewelry') ?></p>
                   <div class="product-row">
-                    <strong>Rs <?= number_format((float) $p['price'], 2) ?></strong>
-                    <button class="add-cart-btn" data-id="db-<?= (int) $p['id'] ?>" data-name="<?= htmlspecialchars($p['name']) ?>" data-price="<?= (float) $p['price'] ?>" type="button">Add to Cart</button>
+                    <strong>Rs <?= number_format((int) $p['price'], 2) ?></strong>
+                    <button class="add-cart-btn" data-id="db-<?= (int) $p['id'] ?>" data-name="<?= htmlspecialchars($p['name']) ?>" data-price="<?= (int) $p['price'] ?>" type="button">Add to Cart</button>
                   </div>
                 </div>
               </article>

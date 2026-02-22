@@ -27,7 +27,7 @@ include __DIR__ . '/header.php';
     </div>
     <div class="profile-form-wrap">
       <form class="auth-form profile-form" id="profileForm" action="update_profile.php" method="post">
-        <label for="profileName">Full Name</label>
+        <label for="profileName">Username</label>
         <input id="profileName" name="name" type="text" value="<?= htmlspecialchars($user['name']) ?>" required />
         <label for="profileEmail">Email</label>
         <input id="profileEmail" name="email" type="email" value="<?= htmlspecialchars($user['email']) ?>" required />
