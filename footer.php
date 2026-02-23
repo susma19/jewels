@@ -31,7 +31,7 @@
       <p>Login to continue shopping your favorite jewelry pieces.</p>
       <form class="auth-form" id="loginForm" action="login.php" method="post">
         <label for="loginEmail">Email</label>
-        <input id="loginEmail" name="email" type="email" placeholder="you@example.com" required />
+        <input id="loginEmail" name="email" type="email" placeholder="you@email.com" required />
         <label for="loginPassword">Password</label>
         <input id="loginPassword" name="password" type="password" placeholder="••••••••" required />
         <button class="btn btn-solid" type="submit">Login</button>
@@ -47,10 +47,10 @@
       <h3 id="signupTitle">Create Account</h3>
       <p>Join to save favorites and checkout faster.</p>
       <form class="auth-form" id="signupForm" action="register.php" method="post">
-        <label for="signupName">Full Name</label>
+        <label for="signupName">Username</label>
         <input id="signupName" name="name" type="text" placeholder="John Doe" required />
         <label for="signupEmail">Email</label>
-        <input id="signupEmail" name="email" type="email" placeholder="you@example.com" required />
+        <input id="signupEmail" name="email" type="email" placeholder="you@email.com" required />
         <label for="signupPassword">Password</label>
         <input id="signupPassword" name="password" type="password" placeholder="Minimum 6 characters" required minlength="6" />
         <button class="btn btn-solid" type="submit">Sign Up</button>
